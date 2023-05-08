@@ -1,0 +1,17 @@
+export const cities = [
+    "Tokyo",
+    "Delhi",
+    "Shanghai",
+    "São Paulo",
+    "Mumbai",
+    "Mexico City",
+    "Beijing",
+    "Osaka",
+    "Cairo",
+    "New York City",
+    "Dhaka",
+    "Karachi",
+    "Buenos Aires",
+    "Istanbul",
+    "Kolkata",
+  ];
