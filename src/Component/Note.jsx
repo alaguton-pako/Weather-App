@@ -72,7 +72,7 @@ const Notes = () => {
         <textarea
           value={noteInput}
           onChange={handleNoteInputChange}
-          placeholder="Enter note..."
+          placeholder="Enter your note here.."
           className="w-full p-2 rounded-lg border border-gray-300 mb-4"
           required
         />
@@ -88,7 +88,7 @@ const Notes = () => {
               value={note.content}
               onChange={(e) => handleNoteEdit(note.id, e.target.value)}
               className="w-full p-2 rounded-lg border border-gray-300"
-              placeholder="Enter your note here"
+              placeholder="Enter your note here.."
               disabled={isEditing && noteInputId !== note.id}
               required
             />

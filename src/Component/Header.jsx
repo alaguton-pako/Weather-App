@@ -29,12 +29,11 @@ function Header({ showSearchInput, showDiv, showTab, onSearch = () => {} }) {
       );
       if (!cityExists) {
         const data = await getWeatherData(searchInput);
-        
+
         existingData.push(data);
         setWeatherData(existingData);
         localStorage.setItem("weatherData", JSON.stringify(existingData));
-        localStorage.setItem("selectedCity", data.city  )
-        
+        localStorage.setItem("selectedCity", data.city);
       }
       onSearch(searchInput);
     } catch (error) {
@@ -42,21 +41,18 @@ function Header({ showSearchInput, showDiv, showTab, onSearch = () => {} }) {
     }
   };
 
-
   const handleKeyPress = (event) => {
     if (event.key === "Enter") {
       handleSearch();
     }
   };
 
-
   useEffect(() => {
     const storedWeatherData = localStorage.getItem("weatherData");
     if (storedWeatherData !== undefined) {
-    
       setWeatherData(JSON.parse(storedWeatherData));
     } else {
-      setWeatherData([])
+      setWeatherData([]);
     }
   }, []);
 
@@ -97,8 +93,8 @@ function Header({ showSearchInput, showDiv, showTab, onSearch = () => {} }) {
               />
               <input
                 type="text"
-                placeholder="Search City"
-                className="p-2 pr-9 rounded-full w-full h-full relative"
+                placeholder="Search City by Name"
+                className="p-4 pr-9 rounded-full w-full h-full relative"
                 value={searchInput}
                 onChange={handleSearchInputChange}
                 onKeyDown={handleKeyPress}
@@ -129,7 +125,7 @@ function Header({ showSearchInput, showDiv, showTab, onSearch = () => {} }) {
             <div className="flex items-center gap-2 px-2 overflow-x-scroll w-screen">
               <h1 className="text-white">Favourites:</h1>
               {favoriteCities && favoriteCities.length > 0 ? (
-                favoriteCities.map((city) => (
+                favoriteCities.sort().map((city) => (
                   <div
                     key={city}
                     className="flex-shrink-0 flex items-center gap-1"
