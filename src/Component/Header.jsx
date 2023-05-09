@@ -53,7 +53,7 @@ function Header({ showSearchInput, showDiv, showTab, onSearch = () => {} }) {
   useEffect(() => {
     const storedWeatherData = localStorage.getItem("weatherData");
     if (storedWeatherData !== undefined) {
-      console.log('tfd')
+    
       setWeatherData(JSON.parse(storedWeatherData));
     } else {
       setWeatherData([])
