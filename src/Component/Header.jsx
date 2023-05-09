@@ -131,7 +131,7 @@ function Header({ showSearchInput, showDiv, showTab, onSearch = () => {} }) {
               ) : (
                 <div className="text-white">No favourite cities added</div>
               )}
-            </div>````
+            </div>
           </>
         )}
       </div>
