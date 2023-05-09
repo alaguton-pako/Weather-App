@@ -19,6 +19,7 @@ export const MainPage = () => {
       } else {
         try {
           const data = await getWeatherDataForCities(cities);
+          // console.log(data)
           localStorage.setItem("weatherData", JSON.stringify(data));
           setWeatherData(data);
         } catch (error) {
@@ -53,12 +54,14 @@ export const MainPage = () => {
             <div
               className="flex justify-between items-center mb-3 hover:bg-white p-2 rounded-lg cursor-pointer"
               key={city}
-              onClick={() => {
-                localStorage.setItem("selectedCity", city);
-                navigate("/weather-page");
-              }}
             >
-              <div className="font-medium">{`${city}. Current temperature => ${temperature}`}</div>
+              <div
+                className="font-medium"
+                onClick={() => {
+                  localStorage.setItem("selectedCity", city);
+                  navigate("/weather-page");
+                }}
+              >{`${city}. Current temperature => ${temperature}`}</div>
               <div className="flex items-center">
                 <span className="">
                   <TiDelete

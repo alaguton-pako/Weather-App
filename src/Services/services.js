@@ -18,6 +18,7 @@ export async function getWeatherData(city) {
 export async function getWeatherDataForCities(cities) {
   try {
     const weatherData = await Promise.all(cities.map(getWeatherData));
+    // console.log(weatherData)
     const sortedWeatherData = weatherData.sort((a, b) => a.name.localeCompare(b.name));
     const formattedWeatherData = sortedWeatherData.map(({ name, main, coord, weather, wind }) => {
       return {
