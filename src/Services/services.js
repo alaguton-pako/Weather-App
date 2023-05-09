@@ -12,32 +12,59 @@ export async function getWeatherData(city) {
     },
   });
 
-  return response.data;
+  const { name, main, coord, weather, wind } = response.data;
+
+  return {
+    city: name,
+    temperature: `${main.temp}°C`,
+    pressure: `${main.pressure} hPa`,
+    humidity: `${main.humidity}%`,
+    windSpeed: `${wind.speed} m/s`,
+    windDirection: `${wind.deg}°`,
+    weatherDescription: weather[0].description,
+    weatherIcon: weather[0].icon,
+    latitude: `${coord.lat}°`,
+    longitude: `${coord.lon}°`,
+  };
 }
+
 
 export async function getWeatherDataForCities(cities) {
   try {
     const weatherData = await Promise.all(cities.map(getWeatherData));
-    // console.log(weatherData)
-    const sortedWeatherData = weatherData.sort((a, b) => a.name.localeCompare(b.name));
-    const formattedWeatherData = sortedWeatherData.map(({ name, main, coord, weather, wind }) => {
-      return {
-        city: name,
-        temperature: `${main.temp}°C`,
-        pressure: `${main.pressure} hPa`,
-        humidity: `${main.humidity}%`,
-        windSpeed: `${wind.speed} m/s`,
-        windDirection: `${wind.deg}°`,
-        weatherDescription: weather[0].description,
-        weatherIcon: weather[0].icon,
-        latitude: `${coord.lat}°`,
-        longitude: `${coord.lon}°`,
-      };
-    });
-    return formattedWeatherData;
+    const sortedWeatherData = weatherData.sort((a, b) =>
+    a.city.localeCompare(b.city)
+    );
+  
+    return sortedWeatherData;
   } catch (error) {
     console.error(error);
   }
 }
 
+export async function getWeatherDataByUserLocation(latitude, longitude) {
+  const response = await axios.get(API_BASE_URL, {
+    params: {
+      lat: latitude,
+      lon: longitude,
+      appid: API_KEY,
+      units: "metric",
+    },
+  });
+
+  const { name, main, coord, weather, wind } = response.data;
+
+  return {
+    city: name,
+    temperature: `${main.temp}°C`,
+    pressure: `${main.pressure} hPa`,
+    humidity: `${main.humidity}%`,
+    windSpeed: `${wind.speed} m/s`,
+    windDirection: `${wind.deg}°`,
+    weatherDescription: weather[0].description,
+    weatherIcon: weather[0].icon,
+    latitude: `${coord.lat}°`,
+    longitude: `${coord.lon}°`,
+  };
+}
 

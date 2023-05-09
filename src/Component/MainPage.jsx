@@ -12,6 +12,7 @@ export const MainPage = () => {
   const [error, setError] = useState(false);
 
   useEffect(() => {
+    
     async function fetchData() {
       const cachedData = localStorage.getItem("weatherData");
       if (cachedData) {
@@ -19,7 +20,7 @@ export const MainPage = () => {
       } else {
         try {
           const data = await getWeatherDataForCities(cities);
-          // console.log(data)
+          console.log({data})
           localStorage.setItem("weatherData", JSON.stringify(data));
           setWeatherData(data);
         } catch (error) {

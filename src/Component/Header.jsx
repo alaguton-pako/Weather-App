@@ -9,7 +9,7 @@ import { getWeatherData } from "../Services/services";
 
 function Header({ showSearchInput, showDiv, showTab, onSearch = () => {} }) {
   const navigate = useNavigate();
-  const [weatherData, setWeatherData] = useState(null);
+  const [weatherData, setWeatherData] = useState([]);
   const selectedCity = localStorage.getItem("selectedCity");
   const [favoriteCities, setFavoriteCities] = useState(
     JSON.parse(localStorage.getItem("favoriteCities"))
@@ -22,14 +22,26 @@ function Header({ showSearchInput, showDiv, showTab, onSearch = () => {} }) {
 
   const handleSearch = async () => {
     try {
-      const data = await getWeatherData(searchInput);
-      setWeatherData([data]);
-      localStorage.setItem("weatherData", JSON.stringify([data]));
+      const existingData =
+        JSON.parse(localStorage.getItem("weatherData")) || [];
+      const cityExists = existingData.some(
+        (item) => item.city.toLowerCase() === searchInput.toLowerCase()
+      );
+      if (!cityExists) {
+        const data = await getWeatherData(searchInput);
+        
+        existingData.push(data);
+        setWeatherData(existingData);
+        localStorage.setItem("weatherData", JSON.stringify(existingData));
+        localStorage.setItem("selectedCity", data.city  )
+        
+      }
       onSearch(searchInput);
     } catch (error) {
       console.log(error);
     }
   };
+
 
   const handleKeyPress = (event) => {
     if (event.key === "Enter") {
@@ -37,11 +49,14 @@ function Header({ showSearchInput, showDiv, showTab, onSearch = () => {} }) {
     }
   };
 
+
   useEffect(() => {
-    // Get weather data from local storage
     const storedWeatherData = localStorage.getItem("weatherData");
-    if (storedWeatherData) {
+    if (storedWeatherData !== undefined) {
+      console.log('tfd')
       setWeatherData(JSON.parse(storedWeatherData));
+    } else {
+      setWeatherData([])
     }
   }, []);
 
