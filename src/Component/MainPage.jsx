@@ -122,10 +122,9 @@ export const MainPage = () => {
         }
       }
     }
-  
+
     handleLocationAccess();
   }, []);
-  
 
   const handleDelete = (city) => {
     const updatedData = weatherData.filter((data) => data.city !== city);
@@ -155,7 +154,7 @@ export const MainPage = () => {
                 className="font-medium"
                 onClick={() => {
                   localStorage.setItem("selectedCity", city);
-                  navigate("/weather-page");
+                  navigate(`/weather-page/${city}`);
                 }}
               >{`${city}. Current temperature => ${temperature}`}</div>
               <div className="flex items-center">

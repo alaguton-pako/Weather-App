@@ -6,18 +6,25 @@ import { AiFillCloud } from "react-icons/ai";
 import { FiSearch } from "react-icons/fi";
 import { TiDelete } from "react-icons/ti";
 import { getWeatherData } from "../Services/services";
+import Spinner from "./Spinner";
+import { useParams } from "react-router-dom";
 
 function Header({ showSearchInput, showDiv, showTab, onSearch = () => {} }) {
+  const { slug } = useParams();
   const navigate = useNavigate();
   const [weatherData, setWeatherData] = useState([]);
-  const selectedCity = localStorage.getItem("selectedCity");
   const [favoriteCities, setFavoriteCities] = useState(
     JSON.parse(localStorage.getItem("favoriteCities"))
   );
   const [searchInput, setSearchInput] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
 
   const handleSearchInputChange = (e) => {
-    setSearchInput(e.target.value);
+    const searchQuery = e.target.value.trim();
+    setSearchInput(searchQuery);
+    onSearch(searchQuery);
   };
 
   const handleSearch = async () => {
@@ -27,19 +34,38 @@ function Header({ showSearchInput, showDiv, showTab, onSearch = () => {} }) {
       const cityExists = existingData.some(
         (item) => item.city.toLowerCase() === searchInput.toLowerCase()
       );
-      if (!cityExists) {
-        const data = await getWeatherData(searchInput);
-
+      let data;
+  
+      if (cityExists) {
+        data = existingData.find(
+          (item) => item.city.toLowerCase() === searchInput.toLowerCase()
+        );
+      } else {
+        setLoading(true);
+        data = await getWeatherData(searchInput);
+  
+        if (!data) {
+          alert(`${searchInput} not found!`);
+          return;
+        }
+  
         existingData.push(data);
-        setWeatherData(existingData);
         localStorage.setItem("weatherData", JSON.stringify(existingData));
-        localStorage.setItem("selectedCity", data.city);
+        setLoading(false);
       }
-      onSearch(searchInput);
+  
+      setWeatherData(existingData);
+      localStorage.setItem("selectedCity", data.city);
+      console.log(data.city)
     } catch (error) {
       console.log(error);
+      setLoading(false);
+      setErrorMessage(
+        "An error occurred while fetching data. Please try again later."
+      );
     }
   };
+  
 
   const handleKeyPress = (event) => {
     if (event.key === "Enter") {
@@ -55,6 +81,7 @@ function Header({ showSearchInput, showDiv, showTab, onSearch = () => {} }) {
       setWeatherData([]);
     }
   }, []);
+  
 
   const handleDeleteFavorite = (city) => {
     const newFavorites = favoriteCities.filter((favCity) => favCity !== city);
@@ -62,12 +89,13 @@ function Header({ showSearchInput, showDiv, showTab, onSearch = () => {} }) {
     localStorage.setItem("favoriteCities", JSON.stringify(newFavorites));
   };
 
-  const matchingData =
-    weatherData && weatherData.find((data) => data.city === selectedCity);
+
+  const matchingData = weatherData?.find((e) => e?.city === slug);
+  // console.log(matchingData)
 
   return (
     <header className="">
-      <div className="py-2 px-9 flex justify-between gap-3 items-center bg-[#022d4f]">
+      <div className="py-2 px-9 flex flex-col md:flex md:flex-row justify-between gap-3 items-center bg-[#022d4f]">
         <div className="flex items-center gap-3">
           <div className="h-20 w-20">
             <img
@@ -83,12 +111,12 @@ function Header({ showSearchInput, showDiv, showTab, onSearch = () => {} }) {
             An <span className="font-bold">Elite</span> Solution Application
           </h1>
         </div>
-        <div className="w-1/5 ">
+        <div className="w-full md:w-1/5">
           {showSearchInput ? (
             <div className="rounded-full">
               <FiSearch
                 size={25}
-                className="text-black absolute top-9 right-16 z-20"
+                className="text-black absolute top-28 md:top-9 right-16 z-20"
                 onClick={handleSearch}
               />
               <input
@@ -104,7 +132,9 @@ function Header({ showSearchInput, showDiv, showTab, onSearch = () => {} }) {
         </div>
       </div>
       <div className="text-white h-10 w-full bg-[#3a5773] flex items-center gap-3 pl-9 text-lg">
-        {showDiv ? (
+        {loading ? (
+          <Spinner />
+        ) : showDiv ? (
           <>
             {matchingData?.weatherDescription === "rainy" ||
               (matchingData?.weatherDescription ===
@@ -146,7 +176,7 @@ function Header({ showSearchInput, showDiv, showTab, onSearch = () => {} }) {
           </>
         )}
       </div>
-      <div className="bg-[#15242d] h-8 w-full">
+      <div className="hidden md:block bg-[#15242d] h-8 w-full">
         {showTab ? (
           <>
             <ul className="px-8 py-2 flex justify-around items-center text-white">

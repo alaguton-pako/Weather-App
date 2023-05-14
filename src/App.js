@@ -11,7 +11,7 @@ function App() {
 
       <Routes>
         <Route path="/" element={<LandingPage />} />
-        <Route path="/weather-page" element={<ViewMorePage />} />
+        <Route path="/weather-page/:slug" element={<ViewMorePage />} />
       </Routes>
     </>
   );
