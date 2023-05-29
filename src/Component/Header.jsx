@@ -5,7 +5,7 @@ import { MdSunny } from "react-icons/md";
 import { AiFillCloud } from "react-icons/ai";
 import { FiSearch } from "react-icons/fi";
 import { TiDelete } from "react-icons/ti";
-import { getWeatherData } from "../Services/services";
+import { getWeatherData } from "../Services/Services";
 import Spinner from "./Spinner";
 import { useParams } from "react-router-dom";
 
@@ -20,13 +20,11 @@ function Header({ showSearchInput, showDiv, showTab, onSearch = () => {} }) {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
-
   const handleSearchInputChange = (e) => {
     const searchQuery = e.target.value.trim();
     setSearchInput(searchQuery);
     onSearch(searchQuery);
   };
-
   const handleSearch = async () => {
     try {
       const existingData =
@@ -35,7 +33,7 @@ function Header({ showSearchInput, showDiv, showTab, onSearch = () => {} }) {
         (item) => item.city.toLowerCase() === searchInput.toLowerCase()
       );
       let data;
-  
+
       if (cityExists) {
         data = existingData.find(
           (item) => item.city.toLowerCase() === searchInput.toLowerCase()
@@ -43,20 +41,22 @@ function Header({ showSearchInput, showDiv, showTab, onSearch = () => {} }) {
       } else {
         setLoading(true);
         data = await getWeatherData(searchInput);
-  
+
         if (!data) {
           alert(`${searchInput} not found!`);
           return;
         }
-  
+
         existingData.push(data);
+        console.log(data);
         localStorage.setItem("weatherData", JSON.stringify(existingData));
         setLoading(false);
       }
-  
+
       setWeatherData(existingData);
       localStorage.setItem("selectedCity", data.city);
-      console.log(data.city)
+      console.log(data.city);
+      navigate(`/weather-page/${data.city}`);
     } catch (error) {
       console.log(error);
       setLoading(false);
@@ -65,7 +65,6 @@ function Header({ showSearchInput, showDiv, showTab, onSearch = () => {} }) {
       );
     }
   };
-  
 
   const handleKeyPress = (event) => {
     if (event.key === "Enter") {
@@ -81,14 +80,12 @@ function Header({ showSearchInput, showDiv, showTab, onSearch = () => {} }) {
       setWeatherData([]);
     }
   }, []);
-  
 
   const handleDeleteFavorite = (city) => {
     const newFavorites = favoriteCities.filter((favCity) => favCity !== city);
     setFavoriteCities(newFavorites);
     localStorage.setItem("favoriteCities", JSON.stringify(newFavorites));
   };
-
 
   const matchingData = weatherData?.find((e) => e?.city === slug);
   // console.log(matchingData)

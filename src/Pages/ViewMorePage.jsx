@@ -6,22 +6,21 @@ import Note from "../Component/Note";
 import { useParams } from "react-router-dom";
 
 const ViewMorePage = () => {
-  const [weatherData, setWeatherData] = useState(null);
+  const [weatherData, setWeatherData] = useState([]);
   const [favoriteCities, setFavoriteCities] = useState(
     JSON.parse(localStorage.getItem("favoriteCities")) || []
   );
+  const { slug } = useParams();
 
   useEffect(() => {
     const cachedData = localStorage.getItem("weatherData");
     if (cachedData) {
-      setWeatherData(JSON.parse(cachedData));
+      setWeatherData(JSON.parse(cachedData)?.find((e) => e?.city === slug));
     }
-  }, []);
-
-  const { slug } = useParams();
+  }, [slug]);
 
   const toggleFavorite = () => {
-    const city = matchingData?.city;
+    const city = weatherData?.city;
     if (!city) return;
 
     if (favoriteCities.length >= 15) {
@@ -47,8 +46,6 @@ const ViewMorePage = () => {
     }
   };
 
-  const matchingData = weatherData?.find((e) => e?.city === slug);
-
   return (
     <>
       <Header showSearchInput={true} showDiv={true} showTab={true} />
@@ -60,7 +57,7 @@ const ViewMorePage = () => {
           >
             <div className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-40"></div>
             <h1 className="absolute top-0 left-0 p-4 text-white text-3xl font-bold">
-              {matchingData?.city}
+              {weatherData?.city}
             </h1>
           </Card>
 
@@ -70,7 +67,7 @@ const ViewMorePage = () => {
               <TiStarOutline
                 size={25}
                 className={
-                  matchingData && favoriteCities?.includes(matchingData?.city)
+                  weatherData && favoriteCities?.includes(weatherData?.city)
                     ? "text-yellow-500 cursor-pointer"
                     : "cursor-pointer"
                 }
@@ -79,20 +76,20 @@ const ViewMorePage = () => {
             </h1>
             <div className="mt-4">
               <p className="text-lg text-[#15242d] font-meduim">
-                Weather: {matchingData?.weatherDescription}
+                Weather: {weatherData?.weatherDescription}
               </p>
               <p className="text-lg text-[#15242d] font-meduim">
                 Coordinate:{" "}
-                {matchingData?.latitude + ", " + matchingData?.longitude}
+                {weatherData?.latitude + ", " + weatherData?.longitude}
               </p>
               <p className="text-lg text-[#15242d] font-meduim">
-                Wind Speed: {matchingData?.windSpeed}
+                Wind Speed: {weatherData?.windSpeed}
               </p>
               <p className="text-lg text-[#15242d] font-meduim">
-                Humidity: {matchingData?.humidity}
+                Humidity: {weatherData?.humidity}
               </p>
               <p className="text-lg text-[#15242d] font-meduim">
-                Temperature: {matchingData?.temperature}
+                Temperature: {weatherData?.temperature}
               </p>
             </div>
           </Card>

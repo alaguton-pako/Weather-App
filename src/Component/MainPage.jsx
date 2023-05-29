@@ -5,7 +5,7 @@ import Card from "./Card";
 import {
   getWeatherDataForCities,
   getWeatherDataByUserLocation,
-} from "../Services/services";
+} from "../Services/Services";
 import { cities } from "../Helper/Data";
 import Spinner from "./Spinner";
 
@@ -104,7 +104,8 @@ export const MainPage = () => {
                     JSON.stringify(storedWeatherData)
                   );
                 }
-                navigate("/weather-page");
+                navigate(`/weather-page/${weatherData?.city}`);
+
                 localStorage.setItem("selectedCity", weatherData.city);
                 localStorage.setItem("hasAllowedAccess", true);
                 localStorage.setItem("isFirstVisit", "false");
