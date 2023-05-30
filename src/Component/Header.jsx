@@ -105,7 +105,7 @@ function Header({ showSearchInput, showDiv, showTab, onSearch = () => {} }) {
             />
           </div>
           <h1 className="font-base text-2xl text-white">
-            An <span className="font-bold">Elite</span> Solution Application
+            Your one stop <span className="font-bold">Weather</span> Application
           </h1>
         </div>
         <div className="w-full md:w-1/5">
